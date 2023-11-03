@@ -9,7 +9,7 @@ import com.valueconnect.repository.CityRepository;
 import com.valueconnect.repository.domain.BooleanExpression;
 import com.valueconnect.repository.search.CitySearchRepository;
 import com.valueconnect.security.SecurityUtils;
-import com.valueconnect.service.GoogleMapsService;
+import com.valueconnect.service.MapService;
 import com.valueconnect.web.rest.dto.CityDTO;
 import com.valueconnect.web.rest.mapper.CityMapper;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class CityService {
     @Autowired
     private CitySearchRepository citySearchRepository;
     @Autowired
-    private GoogleMapsService googleMapsService;
+    private MapService mapsService;
 
     /**
      * Save a city.
@@ -118,7 +118,7 @@ public class CityService {
         }
 
         City cityFromDB = iterableCitiesFromDB.iterator().hasNext() ? iterableCitiesFromDB.iterator().next() : null;
-        Address addressFromGoogle = googleMapsService.getAddressFromPostCode(postCode);
+        Address addressFromGoogle = mapsService.getAddressFromPostCode(postCode);
 
         String fullInfoString = String.format("input cityName='%s', input provinceId=%s, input postCode='%s', " +
                 "listOfCitiesFromDB.size()=%s, listOfCitiesFromDB='%s', " +
@@ -217,7 +217,7 @@ public class CityService {
     }
 
     public City findByPostal(String postCode) {
-        Address googleAddress = googleMapsService.getAddressFromPostCode(postCode);
+        Address googleAddress = mapsService.getAddressFromPostCode(postCode);
         Iterable<City> cities = cityRepository.findAll(QCity.city.region.province.name.eq(googleAddress.getProvince().getName())
             .and(QCity.city.name.eq(googleAddress.getCityName()))
             .and(QCity.city.disabled.eq(false)));

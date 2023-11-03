@@ -89,14 +89,13 @@ public class CityService {
         return cityRepository.findById(id).orElse(null);
     }
 
-    /**
-     *  Delete the  city by id.
-     *
-     *  @param id the id of the entity
-     */
-    public void delete(Long id) {
-        log.debug("Request to delete City : {}", id);
+    public void deleteFromRepo(Long id) {
+        log.debug("Request to delete City : {} from repo", id);
         cityRepository.deleteById(id);
+    }
+
+    public void deleteFromSearchRepo(Long id) {
+        log.debug("Request to delete City : {} from search repo", id);
         citySearchRepository.deleteById(id);
     }
 

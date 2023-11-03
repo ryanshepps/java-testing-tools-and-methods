@@ -76,6 +76,7 @@ public class CityService {
     
         return query;
     }
+    
 
     /**
      *  Get one city by id.

@@ -50,31 +50,33 @@ public class CityService {
         citySearchRepository.save(city);
     }
 
-    /**
-     *  Get all the cities.
-     *
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    public List<City> findAll(String query, Long provinceId, Long regionId, Boolean hideDisabled) {
+    public List<City> findAll(String searchString, Long provinceId, Long regionId, Boolean hideDisabled) {
         log.debug("Request to get all Cities");
-
-        BooleanExpression predicate = QCity.city.isNotNull();
-
-        if (query != null && query.trim().length() > 0) {
-            predicate = QCity.city.name.like(query + "%");
+    
+        BooleanExpression query = buildQuery(searchString, provinceId, regionId, hideDisabled);
+        
+        return cityRepository.findAll(query);
+    }
+    
+    private BooleanExpression buildQuery(String searchString, Long provinceId, Long regionId, Boolean hideDisabled) {
+        BooleanExpression query = QCity.city.isNotNull();
+    
+        if (searchString != null && searchString.trim().length() > 0) {
+            query = query.and(QCity.city.name.like(searchString + "%"));
         }
         if (provinceId != null && provinceId > 0) {
-            predicate = predicate.and(QCity.city.region.province.id.eq(provinceId));
+            query = query.and(QCity.city.region.province.id.eq(provinceId));
         }
         if (hideDisabled != null && hideDisabled) {
-            predicate = predicate.and(QCity.city.disabled.eq(false));
+            query = query.and(QCity.city.disabled.eq(false));
         }
         if (regionId != null && regionId > 0) {
-            predicate = predicate.and(QCity.city.region.id.eq(regionId));
+            query = query.and(QCity.city.region.id.eq(regionId));
         }
-        return cityRepository.findAll(predicate);
+    
+        return query;
     }
+    
 
     /**
      *  Get one city by id.

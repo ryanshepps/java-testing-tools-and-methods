@@ -76,7 +76,6 @@ public class CityService {
     
         return query;
     }
-    
 
     /**
      *  Get one city by id.
@@ -106,6 +105,7 @@ public class CityService {
      */
     public CityDTO findByNameAndProvinceOrPostal(String cityName, Long provinceId, String postCode) {
 
+        //todo: probably make 2 methods (1 for name and province and 1 for postal???)
         Iterable<City> iterableCitiesFromDB = cityRepository.findAll(QCity.city.region.province.id.eq(provinceId)
             .and(QCity.city.name.eq(cityName))
             .and(QCity.city.disabled.eq(false)));

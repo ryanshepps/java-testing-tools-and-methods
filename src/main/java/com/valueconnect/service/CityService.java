@@ -38,19 +38,16 @@ public class CityService {
     @Autowired
     private MapService mapsService;
 
-    /**
-     * Save a city.
-     *
-     * @param cityDTO the entity to save
-     * @return the persisted entity
-     */
-    public CityDTO save(CityDTO cityDTO) {
-        log.debug("Request to save City : {}", cityDTO);
+    public void saveToCityRepo(CityDTO cityDTO) {
+        log.debug("Request to save City to repo: {}", cityDTO);
         City city = cityMapper.cityDTOToCity(cityDTO);
         city = cityRepository.save(city);
-        CityDTO result = cityMapper.cityToCityDTO(city);
+    }
+
+    public void saveToCitySearchRepo(CityDTO cityDTO) {
+        log.debug("Request to save City to search repo: {}", cityDTO);
+        City city = cityMapper.cityDTOToCity(cityDTO);
         citySearchRepository.save(city);
-        return result;
     }
 
     /**

@@ -1,48 +1,41 @@
-package com.valueconnect.service.impl;
+package com.valueconnect.service;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.valueconnect.domain.Address;
 import com.valueconnect.domain.City;
-import com.valueconnect.domain.QCity;
+import com.valueconnect.domain.generated.QCity;
 import com.valueconnect.domain.authority.Authority;
 import com.valueconnect.domain.authority.UserAuthority;
 import com.valueconnect.repository.CityRepository;
+import com.valueconnect.repository.domain.BooleanExpression;
 import com.valueconnect.repository.search.CitySearchRepository;
 import com.valueconnect.security.SecurityUtils;
-import com.valueconnect.service.CityService;
 import com.valueconnect.service.GoogleMapsService;
 import com.valueconnect.web.rest.dto.CityDTO;
 import com.valueconnect.web.rest.mapper.CityMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing City.
  */
 @Service
-@Transactional
-public class CityServiceImpl implements CityService{
+public class CityService {
 
-    private final Logger log = LoggerFactory.getLogger(CityServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(CityService.class);
 
-    @Inject
+    @Autowired
     private CityRepository cityRepository;
-    @Inject
+    @Autowired
     private CityMapper cityMapper;
-    @Inject
+    @Autowired
     private CitySearchRepository citySearchRepository;
-    @Inject
+    @Autowired
     private GoogleMapsService googleMapsService;
 
     /**
@@ -66,8 +59,7 @@ public class CityServiceImpl implements CityService{
      *  @param pageable the pagination information
      *  @return the list of entities
      */
-    @Transactional(readOnly = true)
-    public Page<City> findAll(String query, Long provinceId, Long regionId, Pageable pageable, Boolean hideDisabled) {
+    public List<City> findAll(String query, Long provinceId, Long regionId, Boolean hideDisabled) {
         log.debug("Request to get all Cities");
 
         BooleanExpression predicate = QCity.city.isNotNull();
@@ -84,7 +76,7 @@ public class CityServiceImpl implements CityService{
         if (regionId != null && regionId > 0) {
             predicate = predicate.and(QCity.city.region.id.eq(regionId));
         }
-        return cityRepository.findAll(predicate, pageable);
+        return cityRepository.findAll(predicate);
     }
 
     /**
@@ -93,7 +85,6 @@ public class CityServiceImpl implements CityService{
      *  @param id the id of the entity
      *  @return the entity
      */
-    @Transactional(readOnly = true)
     public City findOne(Long id) {
         log.debug("Request to get City : {}", id);
         return cityRepository.findById(id).orElse(null);
@@ -225,7 +216,6 @@ public class CityServiceImpl implements CityService{
 
     }
 
-    @Override
     public City findByPostal(String postCode) {
         Address googleAddress = googleMapsService.getAddressFromPostCode(postCode);
         Iterable<City> cities = cityRepository.findAll(QCity.city.region.province.name.eq(googleAddress.getProvince().getName())
@@ -249,9 +239,8 @@ public class CityServiceImpl implements CityService{
      *  @param query the query of the search
      *  @return the list of entities
      */
-    @Transactional(readOnly = true)
-    public Page<City> search(String query, Pageable pageable) {
+    public List<City> search(String query) {
         log.debug("Request to search for a page of Cities for query {}", query);
-        return citySearchRepository.search(queryStringQuery(query), pageable);
+        return citySearchRepository.search(CitySearchRepository.queryStringQuery(query));
     }
 }

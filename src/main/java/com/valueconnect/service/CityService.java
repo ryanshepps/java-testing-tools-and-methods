@@ -211,7 +211,28 @@ public class CityService {
                 return cityMapper.cityToCityDTO(addressFromGoogle.getCity());
             }
         }
+    }
 
+    public City findByNameAndProvince(String name, long provinceId) {
+
+        Iterable<City> iterableCitiesFromDB = cityRepository.findAll(QCity.city.region.province.id.eq(provinceId)
+            .and(QCity.city.name.eq(name))
+            .and(QCity.city.disabled.eq(false)));
+
+        List<City> listOfCitiesFromDB = new ArrayList<>();
+        for (City elem : iterableCitiesFromDB) {
+            listOfCitiesFromDB.add(elem);
+        }
+
+        City cityFromDB = iterableCitiesFromDB.iterator().hasNext() ? iterableCitiesFromDB.iterator().next() : null;
+
+        if (cityFromDB == null) {
+            log.warn("findByNameAndProvince(): " +
+                "The database lookup failed, returning NULL"); 
+            return null;
+        }
+
+        return cityFromDB;
     }
 
     public City findByPostal(String postCode) {

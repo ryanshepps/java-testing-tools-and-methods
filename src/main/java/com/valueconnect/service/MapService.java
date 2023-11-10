@@ -1,8 +1,11 @@
 package com.valueconnect.service;
 
+import org.springframework.stereotype.Service;
+
 import com.valueconnect.domain.Address;
 import com.valueconnect.service.Interfaces.IMapService;
 
+@Service
 public class MapService implements IMapService{
 
     public Address getAddressFromPostCode(String postCode) {

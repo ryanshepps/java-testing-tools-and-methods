@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ValueConnectApp {
     public static void main(String[] args) {
-        new SpringApplication(ValueConnectApp.class);
+        SpringApplication app = new SpringApplication(ValueConnectApp.class);
+        app.run();
     }
 }

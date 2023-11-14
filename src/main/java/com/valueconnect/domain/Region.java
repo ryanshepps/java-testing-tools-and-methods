@@ -7,5 +7,9 @@ public class Region {
     public Province getProvince() {
         return province;
     }
+
+    public void setProvince(Province province) {
+        this.province = province;
+    }
     
 }

@@ -9,8 +9,16 @@ public class Province {
         return this.name;
     }
 
-    public Object getAbbrev() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAbbrev() {
         return this.abbrev;
+    }
+
+    public void setAbbrev(String abbrev) {
+        this.abbrev = abbrev; 
     }
     
 }

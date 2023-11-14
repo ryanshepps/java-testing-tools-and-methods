@@ -9,8 +9,16 @@ public class City {
         return this.name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Region getRegion() {
         return this.region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
     }
 
     public City orElse(Object object) {

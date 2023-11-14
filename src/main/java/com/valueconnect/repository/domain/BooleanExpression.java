@@ -4,8 +4,10 @@ import com.valueconnect.domain.generated.QueryObject;
 
 public class BooleanExpression {
 
-    public BooleanExpression(QueryObject queryObject) {
+    private QueryObject queryObject;
 
+    public BooleanExpression(QueryObject queryObject) {
+        this.queryObject = queryObject;
     }
 
     public BooleanExpression and(Object eq) {
